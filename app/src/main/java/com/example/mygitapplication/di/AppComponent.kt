@@ -2,7 +2,7 @@ package com.example.mygitapplication.di
 
 import android.app.Application
 import com.example.mygitapplication.MyGitApplication
-import com.example.mygitapplication.view.FirstFragment
+import com.example.mygitapplication.view.MainFragment
 import com.example.mygitapplication.view.MainActivity
 import dagger.BindsInstance
 import dagger.Component
@@ -20,7 +20,7 @@ interface AppComponent {
     fun inject(activity: MainActivity)
 
     //Inject Main Fragment
-    fun inject(fragment: FirstFragment)
+    fun inject(fragment: MainFragment)
 
     @Component.Builder
     interface Builder {

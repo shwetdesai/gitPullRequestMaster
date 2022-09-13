@@ -2,4 +2,7 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="primaryTextColor">#181B26</color>
+    <color name="colorPullRequestClosed">#a371f7</color>
+    <color name="colorPullRequestOpen">#238636</color>
 </resources>
