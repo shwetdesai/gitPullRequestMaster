@@ -88,7 +88,7 @@ class AppModule {
 
     @Singleton
     @Provides
-    fun provideApiServiceV2(): ApiService? {
+    fun provideApiServiceV2(): ApiService {
         val client: OkHttpClient = OkHttpClient.Builder()
             .addNetworkInterceptor(getHttpLoggingInterceptor())
             .connectTimeout(

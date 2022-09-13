@@ -3,11 +3,11 @@ package com.example.mygitapplication
 import android.app.Application
 import com.example.mygitapplication.di.AppComponent
 import com.example.mygitapplication.di.DaggerAppComponent
-import dagger.Component
+
 
 class MyGitApplication: Application() {
 
-    private var appComponent: AppComponent? = null
+    var appComponents: AppComponent? = null
     companion object{
 
         private var instance: MyGitApplication? = null
@@ -21,18 +21,20 @@ class MyGitApplication: Application() {
 
     override fun onCreate() {
         super.onCreate()
+        instance = this
         setupDependencyInjection()
         getInstance()?.getAppComponent()?.inject(this)
     }
 
 
     fun getAppComponent(): AppComponent? {
-        return appComponent
+        return appComponents
     }
 
     private fun setupDependencyInjection() {
-        appComponent = DaggerAppComponent
+        appComponents = DaggerAppComponent
             .builder()
+            .application(this)
             .build()
     }
 }
