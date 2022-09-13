@@ -8,10 +8,13 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.mygitapplication.MyGitApplication
 import com.example.mygitapplication.R
 import com.example.mygitapplication.databinding.FragmentFirstBinding
 import com.example.mygitapplication.di.AppViewModelFactory
+import com.example.mygitapplication.view.adapter.PullRequestAdapter
 import com.example.mygitapplication.viewModel.MainFragmentViewModel
 import javax.inject.Inject
 
@@ -40,10 +43,8 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         MyGitApplication.getInstance()?.appComponents?.inject(this)
         initMvvm()
-        binding.buttonFirst.setOnClickListener {
-            viewModel.getAllRepositoryFromGit("closed")
-//            findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
-        }
+        getRepoData()
+        setUpObserver()
     }
 
     override fun onDestroyView() {
@@ -55,6 +56,31 @@ class MainFragment : Fragment() {
         if (activity != null && context != null) {
             viewModel =
                 ViewModelProvider(this, viewModelFactory)[MainFragmentViewModel::class.java]
+        }
+    }
+
+    fun getRepoData(){
+        viewModel.getAllRepositoryFromGit("closed")
+    }
+
+    fun setUpObserver(){
+        if(activity != null && context != null){
+            viewModel.data.observe(viewLifecycleOwner){
+                if(it != null){
+                    val adapter = PullRequestAdapter(requireContext(),it)
+                    binding.rvPullRequest.adapter = adapter
+                    binding.rvPullRequest.isNestedScrollingEnabled = false
+                }
+            }
+
+            viewModel.image.observe(viewLifecycleOwner){
+                if(it != null){
+                    Glide.with(requireContext())
+                        .load(it)
+                        .diskCacheStrategy(DiskCacheStrategy.DATA)
+                        .into(binding.ivUserImage)
+                }
+            }
         }
     }
 }
