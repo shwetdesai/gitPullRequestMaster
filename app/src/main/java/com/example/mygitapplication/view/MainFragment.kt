@@ -42,6 +42,7 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         MyGitApplication.getInstance()?.appComponents?.inject(this)
+        startShimmer()
         initMvvm()
         getRepoData()
         setUpObserver()
@@ -50,6 +51,12 @@ class MainFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    fun startShimmer(){
+        binding.shimmerFrameLayout.startShimmer()
+        binding.shimmerFrameLayout.visibility = View.VISIBLE
+        binding.clMain.visibility = View.GONE
     }
 
     fun initMvvm(){
@@ -67,6 +74,9 @@ class MainFragment : Fragment() {
         if(activity != null && context != null){
             viewModel.data.observe(viewLifecycleOwner){
                 if(it != null){
+                    binding.shimmerFrameLayout.stopShimmer()
+                    binding.shimmerFrameLayout.visibility = View.GONE
+                    binding.clMain.visibility = View.VISIBLE
                     val adapter = PullRequestAdapter(requireContext(),it)
                     binding.rvPullRequest.adapter = adapter
                     binding.rvPullRequest.isNestedScrollingEnabled = false
