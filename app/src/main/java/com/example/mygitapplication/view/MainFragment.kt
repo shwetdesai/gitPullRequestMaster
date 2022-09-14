@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -24,6 +25,7 @@ import javax.inject.Inject
 class MainFragment : Fragment() {
 
     private var _binding: FragmentFirstBinding? = null
+
     @Inject
     lateinit var viewModelFactory: AppViewModelFactory
     private lateinit var viewModel: MainFragmentViewModel
@@ -53,43 +55,48 @@ class MainFragment : Fragment() {
         _binding = null
     }
 
-    fun startShimmer(){
+    fun startShimmer() {
         binding.shimmerFrameLayout.startShimmer()
         binding.shimmerFrameLayout.visibility = View.VISIBLE
         binding.clMain.visibility = View.GONE
     }
 
-    fun initMvvm(){
+    fun initMvvm() {
         if (activity != null && context != null) {
             viewModel =
                 ViewModelProvider(this, viewModelFactory)[MainFragmentViewModel::class.java]
         }
     }
 
-    fun getRepoData(){
+    fun getRepoData() {
         viewModel.getAllRepositoryFromGit("closed")
     }
 
-    fun setUpObserver(){
-        if(activity != null && context != null){
-            viewModel.data.observe(viewLifecycleOwner){
-                if(it != null){
+    fun setUpObserver() {
+        if (activity != null && context != null) {
+            viewModel.data.observe(viewLifecycleOwner) {
+                if (it != null) {
                     binding.shimmerFrameLayout.stopShimmer()
                     binding.shimmerFrameLayout.visibility = View.GONE
                     binding.clMain.visibility = View.VISIBLE
-                    val adapter = PullRequestAdapter(requireContext(),it)
+                    val adapter = PullRequestAdapter(requireContext(), it)
                     binding.rvPullRequest.adapter = adapter
                     binding.rvPullRequest.isNestedScrollingEnabled = false
                 }
             }
 
-            viewModel.image.observe(viewLifecycleOwner){
-                if(it != null){
+            viewModel.image.observe(viewLifecycleOwner) {
+                if (it != null) {
                     Glide.with(requireContext())
                         .load(it)
                         .diskCacheStrategy(DiskCacheStrategy.DATA)
                         .into(binding.ivUserImage)
                 }
+            }
+
+            viewModel.noInternet.observe(viewLifecycleOwner) {
+                if (it)
+                    Toast.makeText(requireContext(), "No Internet", Toast.LENGTH_LONG).show()
             }
         }
     }

@@ -20,6 +20,7 @@ class MainFragmentViewModel @javax.inject.Inject constructor(
 
     var data = MutableLiveData<ArrayList<GitData.GitPullRequest>>()
     var image = MutableLiveData<String>()
+    var noInternet = MutableLiveData<Boolean>()
 
     companion object{
         private const val TAG = "MainFragmentViewModel"
@@ -44,6 +45,9 @@ class MainFragmentViewModel @javax.inject.Inject constructor(
                     }
                 }
             }
+        }else{
+            Log.i(TAG,"No Internet")
+            noInternet.postValue(true)
         }
     }
 
